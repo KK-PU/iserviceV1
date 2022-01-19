@@ -1,0 +1,1394 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<StiSerializer version="1.02" type="Net" application="StiReport">
+  <Dictionary Ref="1" type="Dictionary" isKey="true">
+    <BusinessObjects isList="true" count="0" />
+    <Databases isList="true" count="1">
+      <Connection Ref="2" type="Stimulsoft.Report.Dictionary.StiSqlDatabase" isKey="true">
+        <Alias>Connection</Alias>
+        <ConnectionStringEncrypted>5X7Ry0tUQwHiTb30aSUyRtVWc6FLV8Otb2F5rMFc4A/DcLXJyVaTnfhH3URiTCK7wjrZycgWS6RhGpzsYwQlN4fI+0thVhmYw1yoBE1YsSrVFM8JYXHT1X0e2QD5dGIP71qrK08YQ4XiYbmAdw1l69HW2QJeCUuBa3jQxGFJd2vEWvnr11db2UZN6K1LGKQvgWw=</ConnectionStringEncrypted>
+        <Name>Connection</Name>
+      </Connection>
+    </Databases>
+    <DataSources isList="true" count="1">
+      <Payment Ref="3" type="Stimulsoft.Report.Dictionary.StiSqlSource" isKey="true">
+        <Alias>Payment</Alias>
+        <Columns isList="true" count="27">
+          <value>PaymentType,System.String</value>
+          <value>ProjectID,System.String</value>
+          <value>Amount,System.Decimal</value>
+          <value>ReceiptID,System.String</value>
+          <value>ReceiptIDType,System.String</value>
+          <value>ContractID,System.String</value>
+          <value>StartDate,System.String</value>
+          <value>EndDate,System.String</value>
+          <value>Description,System.String</value>
+          <value>Project_1,System.String</value>
+          <value>ProjectName,System.String</value>
+          <value>VoucherNo,System.String</value>
+          <value>PaymentDate,System.DateTime</value>
+          <value>CustomerID,System.String</value>
+          <value>CustomerName,System.String</value>
+          <value>DD_ReceiptDate,System.Int32</value>
+          <value>MM_ReceiptDate,System.Int32</value>
+          <value>YY_ReceiptDate,System.Int32</value>
+          <value>DD_StartDate,System.Int32</value>
+          <value>MM_StartDate,System.Int32</value>
+          <value>YY_StartDate,System.Int32</value>
+          <value>DD_EndDate,System.Int32</value>
+          <value>MM_EndDate,System.Int32</value>
+          <value>YY_EndDate,System.Int32</value>
+          <value>VATAmount,System.Decimal</value>
+          <value>UnitNumber,System.String</value>
+          <value>InvoiceNo,System.String</value>
+        </Columns>
+        <CommandTimeout>24</CommandTimeout>
+        <Dictionary isRef="1" />
+        <Name>Payment</Name>
+        <NameInSource>Connection</NameInSource>
+        <Parameters isList="true" count="5">
+          <value>_x0040_ContractID,ContractID,12,4000</value>
+          <value>_x0040_StartDate,StartDate,22,15</value>
+          <value>_x0040_EndDate,EndDate,22,15</value>
+          <value>_x0040_StartDate_1,StartDate_1,4,0</value>
+          <value>_x0040_EndDate_1,EndDate_1,4,0</value>
+        </Parameters>
+        <SqlCommand>select pm.ContractID, pm.ProjectID, pm.PaymentType, pm.Amount,	pm.ReceiptID,	pm.ReceiptIDType, pm.Status,
+	rc.UnitNumber, rc.CustomerName, pm.VoucherNo, pm.PaymentDate, rc.CustomerID, rc.UnitNumber, pm.VATAmount,
+	fo.InvoiceNo as InvoiceNo
+	
+--	,day(rc.ReceiptDate) as DD_ReceiptDate
+--	,CONVERT(INT, SUBSTRING(@EndDate,2,2)) as DD_EndDate
+--	,CONVERT(INT, SUBSTRING(@StartDate,2,2)) as DD_StartDate
+
+--	,month(rc.ReceiptDate) as MM_ReceiptDate
+--	,CONVERT(INT, SUBSTRING(@StartDate,5,2)) as MM_StartDate
+--	,CONVERT(INT, SUBSTRING(@EndDate,5,2)) as MM_EndDate
+
+
+--	,Year(rc.ReceiptDate) as YY_ReceiptDate
+--	,CONVERT(INT, SUBSTRING(@StartDate,8,4)) as YY_StartDate
+
+
+	
+		
+--	,replace(''' + @StartDate + ''', ''-'', '''') as StartDate
+	
+--	,replace(@EndDate, '-', '') as EndDate
+
+	, isnull(rc.CustomerName, '') + ', ' + isnull(rc.ReceiptText,'') + ', ' + rc.UnitNumber As Description
+	, case  when isnull(pm.ProjectID, '') = 'PM001' then '74100' else 'SSP' end as Project_1
+	, case  when isnull(pm.ProjectID, '') = 'PM001' then '74100' else 'SSP' end as ProjectName
+	
+	from Sys_FI_Payment pm
+	left join Sys_FI_Receipt rc	on rc.ReceiptID = pm.ReceiptID
+	left join Sys_FI_OtherPayment fo on fo.OPaymentID = pm.ReferenceID
+	
+    where pm.PaymentType = 'Z1' and pm.Status = 'P' and pm.VATAmount &gt; 0
+  --        and day(rc.ReceiptDate) &gt;= CONVERT(INT, SUBSTRING(@StartDate,2,2))
+--          and day(rc.ReceiptDate) &lt;= CONVERT(INT, SUBSTRING(@EndDate,2,2))
+--  		and month(rc.ReceiptDate) &gt;= CONVERT(INT, SUBSTRING(@StartDate,5,2))
+--		    and month(rc.ReceiptDate) &lt;= CONVERT(INT, SUBSTRING(@EndDate,5,2))
+--			and Year(rc.ReceiptDate) = CONVERT(INT, SUBSTRING(@StartDate,8,4))
+          and day(rc.ReceiptDate) &gt;= day(@StartDate_1)
+		  and day(rc.ReceiptDate) &lt;= day(@EndDate_1)
+ 		  and month(rc.ReceiptDate) &gt;= month(@StartDate_1)
+		  and month(rc.ReceiptDate) &lt;= month(@EndDate_1)
+		  and Year(rc.ReceiptDate) = year(@StartDate_1)
+	
+
+--	where PaymentType = 'Z1' and Status = 'P' and ContractID = @ContractID</SqlCommand>
+      </Payment>
+    </DataSources>
+    <Relations isList="true" count="0" />
+    <Report isRef="0" />
+    <Resources isList="true" count="0" />
+    <Variables isList="true" count="5">
+      <value>,ContractID,ContractID,,System.String,_x0032_551080297,False,False,True,False</value>
+      <value>,StartDate,StartDate,,System.String,_x0027_01_x002F_03_x002F_2021_x0027_,False,False,True,False</value>
+      <value>,EndDate,EndDate,,System.String,_x0027_31_x002F_03_x002F_2021_x0027_,False,False,True,False</value>
+      <value>,StartDate_1,StartDate_1,,System.DateTime,_x0033__x002F_1_x002F_2021_x0020_9:00:41_x0020_AM,False,False,True,False,_x003C__x003F_xml_x0020_version_x003D__x0022_1.0_x0022__x0020_encoding_x003D__x0022_utf-16_x0022__x0020_standalone_x003D__x0022_yes_x0022__x003F__x003E__x003C_StiSerializer_x0020_version_x003D__x0022_1.02_x0022__x0020_type_x003D__x0022_Net_x0022__x0020_application_x003D__x0022_State_x0022__x003E__x003C_DateTimeType_x003E_DateAndTime_x003C__x002F_DateTimeType_x003E__x003C_BindingVariable_x0020_isNull_x003D__x0022_true_x0022__x0020__x002F__x003E__x003C_Keys_x0020_isList_x003D__x0022_true_x0022__x0020_count_x003D__x0022_0_x0022__x0020__x002F__x003E__x003C_Values_x0020_isList_x003D__x0022_true_x0022__x0020_count_x003D__x0022_0_x0022__x0020__x002F__x003E__x003C_ValuesBinding_x0020_isList_x003D__x0022_true_x0022__x0020_count_x003D__x0022_0_x0022__x0020__x002F__x003E__x003C__x002F_StiSerializer_x003E_</value>
+      <value>,EndDate_1,EndDate_1,,System.DateTime,_x0033__x002F_31_x002F_2021_x0020_9:02:07_x0020_AM,False,False,True,False,_x003C__x003F_xml_x0020_version_x003D__x0022_1.0_x0022__x0020_encoding_x003D__x0022_utf-16_x0022__x0020_standalone_x003D__x0022_yes_x0022__x003F__x003E__x003C_StiSerializer_x0020_version_x003D__x0022_1.02_x0022__x0020_type_x003D__x0022_Net_x0022__x0020_application_x003D__x0022_State_x0022__x003E__x003C_DateTimeType_x003E_DateAndTime_x003C__x002F_DateTimeType_x003E__x003C_BindingVariable_x0020_isNull_x003D__x0022_true_x0022__x0020__x002F__x003E__x003C_Keys_x0020_isList_x003D__x0022_true_x0022__x0020_count_x003D__x0022_0_x0022__x0020__x002F__x003E__x003C_Values_x0020_isList_x003D__x0022_true_x0022__x0020_count_x003D__x0022_0_x0022__x0020__x002F__x003E__x003C_ValuesBinding_x0020_isList_x003D__x0022_true_x0022__x0020_count_x003D__x0022_0_x0022__x0020__x002F__x003E__x003C__x002F_StiSerializer_x003E_</value>
+    </Variables>
+  </Dictionary>
+  <EngineVersion>EngineV2</EngineVersion>
+  <GlobalizationStrings isList="true" count="0" />
+  <MetaTags isList="true" count="0" />
+  <Pages isList="true" count="1">
+    <Page1 Ref="4" type="Page" isKey="true">
+      <Border>None;Black;1;Solid;False;1;Black</Border>
+      <Brush>Transparent</Brush>
+      <Components isList="true" count="7">
+        <PageHeaderBand1 Ref="5" type="PageHeaderBand" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0.4,58.4,0.6</ClientRectangle>
+          <Components isList="true" count="18">
+            <Text1 Ref="6" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>4,0,4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>ffd2951d110948d09b59a530f4721e53</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text1</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>AccountName</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text1>
+            <Text4 Ref="7" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>8,0,10.2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>1bd523476e2b4f468edbb028abe4bc45</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text4</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>Description</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text4>
+            <Text2 Ref="8" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>18.2,0,1.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>2021c3f076754cbcbd234ec33b647624</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text2</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>Dr</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text2>
+            <Text45 Ref="9" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>19.8,0,1.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>ba6540f848414c8096ed42ace602aae1</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text45</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>Cr</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text45>
+            <Text46 Ref="10" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>21.4,0,2.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>2878f12f6a3541d6b61b8e1c8f3e8461</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text46</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>OrgCode</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text46>
+            <Text47 Ref="11" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>26.2,0,2.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>a3860cfaa7854f5c88bcb528ddc13069</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text47</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>code</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text47>
+            <Text48 Ref="12" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>28.6,0,2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>5f6a08e191b444c2be1dbef4ba32abe2</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text48</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>journal</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text48>
+            <Text49 Ref="13" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>30.6,0,2.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>51217e422a8d4bcf805f69bb19915662</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text49</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>date</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text49>
+            <Text50 Ref="14" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>33.2,0,2.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>7e9a3924546b4e79a38b9423503db6f7</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text50</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>ExtOrgCode</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text50>
+            <Text21 Ref="15" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>1.8,0,2.2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>039d8626cc3e4784b30249561a18d12a</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text21</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>AccountCode
+</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text21>
+            <Text23 Ref="16" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>0,0,1.8,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>c77685940ff74c6ba64fb1d270b06bbd</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text23</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>LineNumber</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text23>
+            <Text52 Ref="17" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>35.8,0,2.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>7dfe91e8fe6046cca3bec5cec74a6079</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text52</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>ExtOrgName</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text52>
+            <Text65 Ref="18" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>38.4,0,7.2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>2786dfbb986d4a6c9c924cce3e2feebc</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text65</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>Remark</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text65>
+            <Text66 Ref="19" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>45.6,0,2.8,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>21f92bbcacef4ed1a870eda1a32cbf21</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text66</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>CBSCode</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text66>
+            <Text67 Ref="20" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>48.4,0,2.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>b70b8f0e3ef54655a1695c339cf0e682</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text67</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>WBSCode</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text67>
+            <Text68 Ref="21" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>51,0,3,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>e5f44a96382d445095a914ed7664478d</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text68</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>Allocation</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text68>
+            <Text69 Ref="22" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>54,0,4.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>be3d48e6359d47ee830586f8ec6dc05a</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text69</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>BudgetLineCode</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text69>
+            <Text51 Ref="23" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>[146:208:80]</Brush>
+              <ClientRectangle>23.8,0,2.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>1d1c6fe78ec84cb89686fd923131a178</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text51</Name>
+              <Page isRef="4" />
+              <Parent isRef="5" />
+              <Text>OrgName</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text51>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <Name>PageHeaderBand1</Name>
+          <Page isRef="4" />
+          <Parent isRef="4" />
+        </PageHeaderBand1>
+        <DataBand1 Ref="24" type="DataBand" isKey="true">
+          <Brush>Transparent</Brush>
+          <BusinessObjectGuid isNull="true" />
+          <ClientRectangle>0,1.8,58.4,0.6</ClientRectangle>
+          <Components isList="true" count="18">
+            <Text7 Ref="25" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <CanGrow>True</CanGrow>
+              <ClientRectangle>0,0,1.8,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12</Font>
+              <GrowToHeight>True</GrowToHeight>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text7</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <Text>{Line}</Text>
+              <TextBrush>Black</TextBrush>
+              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+            </Text7>
+            <Text3 Ref="26" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>4,0,4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>496d3b10211648e3be221fce977f7c0b</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text3</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <Text>ลูกหนี้การค้า - โครงการ SSP</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text3>
+            <Text5 Ref="27" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>8,0,10.2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>a8418c9dbe78412c9b374558dc349d27</Guid>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text5</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <Text>{Payment.Description}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text5>
+            <Text6 Ref="28" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>18.2,0,1.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>57c3787633c24a2fb594b1e46d9674ca</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text6</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text6>
+            <Text8 Ref="29" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>19.8,0,1.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>a472ed6999ab45f085698422c8a1f56d</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text8</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <Text>{Payment.VATAmount}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>DataColumn</Type>
+            </Text8>
+            <Text9 Ref="30" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>21.4,0,2.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>dbe2a57609264555a469fc69de9c156c</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text9</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <Text>{Payment.Project_1}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text9>
+            <Text10 Ref="31" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>26.2,0,2.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>7f042778c733452984ce0761d598f294</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text10</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <Text>{Payment.VoucherNo}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text10>
+            <Text11 Ref="32" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>28.6,0,2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>8776a85e1f5f4396b2b66f9ad5ace328</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text11</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <Text>{Payment.ReceiptIDType}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text11>
+            <Text12 Ref="33" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>23.8,0,2.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>8a78cbad95a4499e996f118a69435ea6</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text12</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <Text>{Payment.ProjectName}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text12>
+            <Text13 Ref="34" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>1.8,0,2.2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>895168c5c34246f3937893e2b91a3199</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text13</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <Text>1003102
+</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text13>
+            <Text14 Ref="35" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>30.6,0,2.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>3f7c7b0215ba433a81f98aefec05123f</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text14</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <Text>{Payment.PaymentDate}</Text>
+              <TextBrush>Black</TextBrush>
+              <TextFormat Ref="36" type="CustomFormat" isKey="true">
+                <StringFormat>MM/dd/yyyy</StringFormat>
+              </TextFormat>
+              <Type>Expression</Type>
+            </Text14>
+            <Text15 Ref="37" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>33.2,0,2.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>e49e739b5c0640798dc2f21e025dcdd0</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text15</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text15>
+            <Text16 Ref="38" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>35.8,0,2.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>4259a009289e4dd0b05e3ad401bd6e14</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text16</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text16>
+            <Text17 Ref="39" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>38.4,0,7.2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,9,Bold</Font>
+              <Guid>ebb466923ac74fdc8bde4272ee8b5979</Guid>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text17</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <Text>{"ใบเสร็จเลขที่ " + Payment.ReceiptID + ", Unit no : " + Payment.UnitNumber + ", Invoice no : " + Payment.InvoiceNo}</Text>
+              <TextBrush>Black</TextBrush>
+              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+              <Type>Expression</Type>
+            </Text17>
+            <Text18 Ref="40" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>45.6,0,2.8,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>550a5981718941d79963bb10d48f1a15</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text18</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text18>
+            <Text19 Ref="41" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>48.4,0,2.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>3c3749265c424b0f94d96fdfd86962e9</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text19</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text19>
+            <Text20 Ref="42" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>51,0,3,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>24a336c27c014cefaf86ab7a345a3d71</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text20</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text20>
+            <Text22 Ref="43" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>54,0,4.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>4d4a0a4e8ddf42258be2e5a0c2a70e95</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text22</Name>
+              <Page isRef="4" />
+              <Parent isRef="24" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text22>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <DataRelationName isNull="true" />
+          <DataSourceName>Payment</DataSourceName>
+          <Filters isList="true" count="0" />
+          <Name>DataBand1</Name>
+          <Page isRef="4" />
+          <Parent isRef="4" />
+          <Sort isList="true" count="0" />
+        </DataBand1>
+        <FooterBand1 Ref="44" type="FooterBand" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,3.2,58.4,1.2</ClientRectangle>
+          <Components isList="true" count="36">
+            <Text25 Ref="45" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <CanGrow>True</CanGrow>
+              <ClientRectangle>0,0,1.8,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12</Font>
+              <GrowToHeight>True</GrowToHeight>
+              <Guid>162840b2a2844f348aa8346823e70f47</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text25</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>{Line+1}</Text>
+              <TextBrush>Black</TextBrush>
+              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+              <Type>Expression</Type>
+            </Text25>
+            <Text26 Ref="46" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>4,0,4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>1bf953ac0d364b13aa7c4e23c3782e0e</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text26</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>ส่วนขาด(ส่วนเกิน)จากเศษสตางค์</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text26>
+            <Text27 Ref="47" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>8,0,10.2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>126883c94cf345cba8a7fa88be3f1e36</Guid>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text27</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>ส่วนขาด(ส่วนเกิน)จากเศษสตางค์</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text27>
+            <Text28 Ref="48" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>18.2,0,1.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>d3e8ba4df3dd49d3a9b089bcade293ae</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text28</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>{SumIf(DataBand1,Payment.VATAmount,Payment.Project_1 == "SSP")}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Totals</Type>
+            </Text28>
+            <Text29 Ref="49" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>19.8,0,1.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>1cc3062660df4092bbf6c6ea768d4aa0</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text29</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text29>
+            <Text30 Ref="50" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>21.4,0,2.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>e8ee3861713f4cf4a19694bfedf63401</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text30</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>SSP</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text30>
+            <Text31 Ref="51" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>23.8,0,2.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>83e319ae9f4840a0a4ca0aea0adcb341</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text31</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>SSP</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text31>
+            <Text32 Ref="52" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>1.8,0,2.2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>ef2afea3f0444baab92ca27475589653</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text32</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>6002206
+</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text32>
+            <Text33 Ref="53" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <CanGrow>True</CanGrow>
+              <ClientRectangle>0,0.6,1.8,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12</Font>
+              <GrowToHeight>True</GrowToHeight>
+              <Guid>3db7310de9b84969a6c30bd896433da2</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text33</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>{Line+2}</Text>
+              <TextBrush>Black</TextBrush>
+              <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+              <Type>Expression</Type>
+            </Text33>
+            <Text34 Ref="54" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>4,0.6,4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>1cd3f686226f4337b6aa18d0cc985af7</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text34</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>ส่วนขาด(ส่วนเกิน)จากเศษสตางค์</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text34>
+            <Text35 Ref="55" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>8,0.6,10.2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>dead653f067544e79260d65985b5971c</Guid>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text35</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>ส่วนขาด(ส่วนเกิน)จากเศษสตางค์</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text35>
+            <Text36 Ref="56" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>18.2,0.6,1.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>2bad9638c04149849a930bfce4f29208</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text36</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>{SumIf(DataBand1,Payment.VATAmount,Payment.Project_1 == "74100")}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Totals</Type>
+            </Text36>
+            <Text37 Ref="57" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>19.8,0.6,1.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>78a114846c51450ca43c9b6f8fc3bc50</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text37</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text37>
+            <Text38 Ref="58" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>21.4,0.6,2.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>2860c12ee4f4473eb3decd6144cc8d6d</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text38</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>74100</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text38>
+            <Text39 Ref="59" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>23.8,0.6,2.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>a788cb713c2547d1830aa60c6c2e7aac</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text39</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>74100</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text39>
+            <Text40 Ref="60" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>1.8,0.6,2.2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>3642b94943d74ea7b58772ac4c48f355</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text40</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>6002206
+</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text40>
+            <Text41 Ref="61" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>26.2,0,2.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>2eb08dcf2f1041d58ee863d6004b6c2a</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text41</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>{Payment.VoucherNo}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text41>
+            <Text42 Ref="62" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>28.6,0,2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>4066f571d82f4d0d990b6d87b7cd8e49</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text42</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>{Payment.ReceiptIDType}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text42>
+            <Text43 Ref="63" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>30.6,0,2.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>d51ae5be27d84b5fb7d3cae752dc5633</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text43</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>{Payment.PaymentDate}</Text>
+              <TextBrush>Black</TextBrush>
+              <TextFormat Ref="64" type="CustomFormat" isKey="true">
+                <StringFormat>MM/dd/yyyy</StringFormat>
+              </TextFormat>
+              <Type>Expression</Type>
+            </Text43>
+            <Text44 Ref="65" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>33.2,0,2.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>59e0c56f654a495b9dd2f41991b6d880</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text44</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text44>
+            <Text53 Ref="66" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>35.8,0,2.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>7d5052780fb64907945485cef4f9dffb</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text53</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text53>
+            <Text54 Ref="67" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>38.4,0,7.2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>37661c73b42846408d69badf3baf52eb</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text54</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text54>
+            <Text55 Ref="68" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>45.6,0,2.8,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>29c3aac9764e42f4846bbc4ff59aa085</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text55</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text55>
+            <Text56 Ref="69" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>48.4,0,2.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>b7c880e16ede4d13a23dc270c8349df5</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text56</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text56>
+            <Text58 Ref="70" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>26.2,0.6,2.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>840b37a021264f3b8c834a7b834d6a8a</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text58</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>{Payment.VoucherNo}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text58>
+            <Text59 Ref="71" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>28.6,0.6,2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>5e024cd6ae914c2a960ae209209444c2</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text59</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>{Payment.ReceiptIDType}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text59>
+            <Text60 Ref="72" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>30.6,0.6,2.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>0ae3ce2d22fd4c6aa425e3df59147470</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text60</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <Text>{Payment.PaymentDate}</Text>
+              <TextBrush>Black</TextBrush>
+              <TextFormat Ref="73" type="CustomFormat" isKey="true">
+                <StringFormat>MM/dd/yyyy</StringFormat>
+              </TextFormat>
+              <Type>Expression</Type>
+            </Text60>
+            <Text61 Ref="74" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>33.2,0.6,2.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>22a9b3c4d3564b2f979fd3a1a65057c4</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text61</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text61>
+            <Text62 Ref="75" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>35.8,0.6,2.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>504331e5f7664e2db1af30750839c932</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text62</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text62>
+            <Text63 Ref="76" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>38.4,0.6,7.2,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>0f3def6121984a3188a805ee99d4b6b1</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text63</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text63>
+            <Text64 Ref="77" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>45.6,0.6,2.8,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>639079b5da494366967725c27532e313</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text64</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text64>
+            <Text70 Ref="78" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>48.4,0.6,2.6,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>82c39e18368b465a948d2ecf2d23cbc6</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text70</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text70>
+            <Text72 Ref="79" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>51,0,3,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>46dba16970124cd2b31793ef2e0498d0</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text72</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text72>
+            <Text73 Ref="80" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>54,0,4.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>34c222474ae948b886ee4fd0fb5f32ac</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text73</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text73>
+            <Text74 Ref="81" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>51,0.6,3,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>ab03ac8f26e140888a2773b182ef97e4</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text74</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text74>
+            <Text75 Ref="82" type="Text" isKey="true">
+              <Border>All;Black;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>54,0.6,4.4,0.6</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>TH Sarabun New,12,Bold</Font>
+              <Guid>92b3d4e8e30a4c07a0f35c5cf2f693c7</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text75</Name>
+              <Page isRef="4" />
+              <Parent isRef="44" />
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text75>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <Name>FooterBand1</Name>
+          <Page isRef="4" />
+          <Parent isRef="4" />
+        </FooterBand1>
+        <StartPointPrimitive107 Ref="83" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
+          <ClientRectangle>34.8,9.14,0,0</ClientRectangle>
+          <Name>StartPointPrimitive107</Name>
+          <Page isRef="4" />
+          <Parent isRef="4" />
+          <ReferenceToGuid>cbd1d5c42e2e4bba9f37a467b8ca3413</ReferenceToGuid>
+        </StartPointPrimitive107>
+        <EndPointPrimitive107 Ref="84" type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true">
+          <ClientRectangle>34.8,10.92,0,0</ClientRectangle>
+          <Name>EndPointPrimitive107</Name>
+          <Page isRef="4" />
+          <Parent isRef="4" />
+          <ReferenceToGuid>cbd1d5c42e2e4bba9f37a467b8ca3413</ReferenceToGuid>
+        </EndPointPrimitive107>
+        <StartPointPrimitive108 Ref="85" type="Stimulsoft.Report.Components.StiStartPointPrimitive" isKey="true">
+          <ClientRectangle>35.56,9.14,0,0</ClientRectangle>
+          <Name>StartPointPrimitive108</Name>
+          <Page isRef="4" />
+          <Parent isRef="4" />
+          <ReferenceToGuid>088c1a3a8dbe47df9d5b258b01a9a8d5</ReferenceToGuid>
+        </StartPointPrimitive108>
+        <EndPointPrimitive108 Ref="86" type="Stimulsoft.Report.Components.StiEndPointPrimitive" isKey="true">
+          <ClientRectangle>35.56,10.92,0,0</ClientRectangle>
+          <Name>EndPointPrimitive108</Name>
+          <Page isRef="4" />
+          <Parent isRef="4" />
+          <ReferenceToGuid>088c1a3a8dbe47df9d5b258b01a9a8d5</ReferenceToGuid>
+        </EndPointPrimitive108>
+      </Components>
+      <Conditions isList="true" count="0" />
+      <Guid>c3b1c222d7ac46eeaa6747139c83ff39</Guid>
+      <LargeHeight>True</LargeHeight>
+      <LargeHeightFactor>1</LargeHeightFactor>
+      <Margins>0.45,0.45,0.4826,0.5</Margins>
+      <Name>Page1</Name>
+      <Orientation>Landscape</Orientation>
+      <PageHeight>42</PageHeight>
+      <PageWidth>59.3</PageWidth>
+      <PaperSize>A3</PaperSize>
+      <Report isRef="0" />
+      <StretchToPrintArea>True</StretchToPrintArea>
+      <Watermark Ref="87" type="Stimulsoft.Report.Components.StiWatermark" isKey="true">
+        <Font>Arial,100</Font>
+        <TextBrush>[50:0:0:0]</TextBrush>
+      </Watermark>
+    </Page1>
+  </Pages>
+  <PrinterSettings Ref="88" type="Stimulsoft.Report.Print.StiPrinterSettings" isKey="true" />
+  <ReferencedAssemblies isList="true" count="8">
+    <value>System.Dll</value>
+    <value>System.Drawing.Dll</value>
+    <value>System.Windows.Forms.Dll</value>
+    <value>System.Data.Dll</value>
+    <value>System.Xml.Dll</value>
+    <value>Stimulsoft.Controls.Dll</value>
+    <value>Stimulsoft.Base.Dll</value>
+    <value>Stimulsoft.Report.Dll</value>
+  </ReferencedAssemblies>
+  <ReportAlias>Report</ReportAlias>
+  <ReportChanged>5/13/2021 2:54:18 PM</ReportChanged>
+  <ReportCreated>5/7/2015 3:56:12 PM</ReportCreated>
+  <ReportFile>C:\Users\piyanan\Desktop\RP_R018_ESTAR.mrt</ReportFile>
+  <ReportGuid>f997f8e18ad144d89ba6e7d5f289eeb8</ReportGuid>
+  <ReportImage isNull="true" />
+  <ReportName>Report</ReportName>
+  <ReportUnit>Centimeters</ReportUnit>
+  <ReportVersion>2017.1.11.0</ReportVersion>
+  <Script>using System;
+using System.Drawing;
+using System.Windows.Forms;
+using System.Data;
+using Stimulsoft.Controls;
+using Stimulsoft.Base.Drawing;
+using Stimulsoft.Report;
+using Stimulsoft.Report.Dialogs;
+using Stimulsoft.Report.Components;
+
+namespace Reports
+{
+    public class Report : Stimulsoft.Report.StiReport
+    {
+        public Report()        {
+            this.InitializeComponent();
+        }
+public int i = 1;
+        #region StiReport Designer generated code - do not modify
+		#endregion StiReport Designer generated code - do not modify
+    }
+}
+</Script>
+  <ScriptLanguage>CSharp</ScriptLanguage>
+  <Styles isList="true" count="0" />
+</StiSerializer>
